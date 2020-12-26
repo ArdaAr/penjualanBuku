@@ -1,4 +1,4 @@
-from database import db1
+# from database import db1
 from buku import buku
 
 class Person():
@@ -9,9 +9,11 @@ class Person():
         print(self.nama)
 
 class admin(Person):
-    def __init__(self, nama, umur,):
-        self.umur = umur
+    def __init__(self,id,nama,username,password):
         super().__init__(nama)
+        self.id = id
+        self.username = username
+        self.password = password
 
     def tambahStok(self):
         print("Silakan masukkan data buku yang ingin ditambah : ")
@@ -24,13 +26,20 @@ class admin(Person):
         buku1 = buku(id,judul,kategori,harga,penerbit,stok)
         buku1.stokNambah()
     
-    def lihatPesanan(self):
+    def lihatPesanan(self,db1):
         query = "SELECT * FROM PESANAN"
-        db1.show(query)
-    
-    def hapusStok(self):
-        query = "DELETE FROM buku WHERE ID=%s"
-        db1.delete(query)
+        db1.cursor.execute(query)
+        db1.cursor.fetchall()
+
+    def hapusStok(self,db1):
+        id = input("masukan id dari data yang akan dihapus : ")
+        val =(id,)
+        query = "DELETE FROM buku WHERE ID_BUKU=%s"
+        db1.cursor.execute(query,val)
+        
+        
+        
+        
 
 
 class user(Person):

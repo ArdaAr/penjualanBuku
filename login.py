@@ -1,6 +1,6 @@
 from pembelian import pembelian
 from buku import buku
-from person import user
+from person import admin, user
 from database import *
 from getpass import getpass
 
@@ -12,7 +12,7 @@ class run():
         if a==1:
             self.loginUser(db,objRun)
         elif a==2:
-            print("admin soon")
+            self.loginAdmin(db,objRun)
         else:
             self.daftar(db,objRun)
 
@@ -80,10 +80,33 @@ class run():
         else:
             print("Maaf Username yang anda masukkan salah, silakan ulangi...")
             self.loginUser(db,objRun)
-
-    def loginAdmin(self):
-        # coding ndek kene jul
-        ''
+    
+    def menuAdmin(self,db,objAdmin):
+        pilihan = int(input("masukan pilihan \n 1. lihatPesanan \n 2. hapusStok \n ="))
+        if pilihan==1 :
+            objAdmin.lihatPesanan(db)
+        elif pilihan==2 :
+            objAdmin.hapusStok(db)
+               
+    def loginAdmin(self,db,objRun):
+        username = input("Masukkan Username\n= ")
+        pw = getpass("Masukkan Password\n= ")
+        val = (username,)
+        query = "SELECT * FROM ADMIN WHERE username=%s"
+        db.cursor.execute(query,val)
+        dataAdmin = db.cursor.fetchone()
+        db.conn.commit()
+        if (dataAdmin):
+            objAdmin = admin(dataAdmin[0],dataAdmin[1],dataAdmin[2],dataAdmin[3])
+            if pw == objAdmin.password:
+                print("SELAMAT DATANG KEMBALI {}".format(objAdmin.nama))
+                return self.menuAdmin(db,objAdmin)
+            else:
+                print("Maaf kata sandi yang anda masukkan salah!")
+                return self.loginAdmin(db,objRun)
+        else:
+            print("Maaf Username yang anda masukkan salah, silakan ulangi...")
+            self.loginAdmin(db,objRun)
 
     def daftar(self,db,objRun):
         print("="*20+"Register Books Console Store"+"="*20)
@@ -106,6 +129,7 @@ class run():
         except mysql.connector.Error as e:
             print(e)
             self.daftar(db,objRun)
+
 
 program1 = run()
 program1.login(db1, program1)
