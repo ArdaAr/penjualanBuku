@@ -2,54 +2,70 @@
 from buku import buku
 
 class Person():
-    def __init__(self, nama):
+    def __init__(self, nama, username, password):
         self.nama = nama
+        self.username = username
+        self.__password = password
     
     def getNama(self):
         print(self.nama)
+    
+    def cekPassword(self, pw):
+        if pw == self.__password:
+            return True
+        return False
 
 class admin(Person):
-    def __init__(self,id,nama,username,password):
-        super().__init__(nama)
-        self.id = id
-        self.username = username
-        self.password = password
+    def __init__(self,nama,username,password):
+        super().__init__(nama, username, password)
+        self.id = None
 
-    def tambahStok(self):
+    def tambahStok(self,db1):
         print("Silakan masukkan data buku yang ingin ditambah : ")
-        id = input("Masukkan ID Buku : ")
         judul = input("Masukkan Judul Buku : ")
         kategori = input("Masukkan Kategori Buku : ")
         harga = int(input("Masukkan Harga Buku : "))
         penerbit = input("Masukkan Penerbit Buku : ")
-        stok = int(input("Masukkan Stok Buku : "))
-        buku1 = buku(id,judul,kategori,harga,penerbit,stok)
-        buku1.stokNambah()
-    
+        stok = int(input("Masukkan Jumlah Stok Buku : "))
+        # stok = int(input("Masukkan Stok Buku : "))
+        # buku1 = buku(id,judul,kategori,harga,penerbit,stok)
+        # buku1.stokNambah()
+        query = "insert into BUKU(Nama_Buku,Kategori_buku,Harga,Penerbit,stok) values(%s,%s,%s,%s,%s)"
+        val = (judul,kategori,harga,penerbit,stok)
+        db1.cursor.execute(query,val)
+        db1.conn.commit()
+        print("====== Buku Berhasil Ditambahkan ======")
+
+    def tambahJumlahStok(self):
+        objBuku = buku()
+        id = int(input("Masukkan ID Buku yang akan ditambahkan stok"))
+        objBuku.getDataBuku(id)
+        stok = int(input("Masukkan Jumlah Stok yang ditambahkan : "))
+        objBuku.stokNambah(stok)
+
     def lihatPesanan(self,db1):
-        query = "SELECT * FROM PESANAN"
+        query = "SELECT ID_pesanan,Nama_Customer,Nama_Buku,Tanggal,quantity FROM Customer c join PESANAN p on c.id_customer=p.id_customer join buku b on p.id_buku=b.id_buku"
         db1.cursor.execute(query)
-        db1.cursor.fetchall()
+        all = db1.cursor.fetchall()
+        for i in all:
+            for data in i:
+                print(data, end=" ")
+            print()
 
     def hapusStok(self,db1):
-        id = input("masukan id dari data yang akan dihapus : ")
-        val =(id,)
-        query = "DELETE FROM buku WHERE ID_BUKU=%s"
-        db1.cursor.execute(query,val)
+        id = input("masukkan id dari data yang akan di hapus : ")
+        sql = "DELETE FROM BUKU WHERE ID_Buku=%s"
+        val = (id,)
+        db1.cursor.execute(sql,val)
+        db1.conn.commit()
+        print("====== Buku dengan ID {} Berhasil dihapus ======".format(id))
         
-        
-        
-        
-
-
 class user(Person):
     def __init__(self, nama, alamat, email, noHp, username, password):
-        super().__init__(nama)
+        super().__init__(nama,username, password)
         self.id = None
         self.email = email
         self.noHp = noHp
-        self.password = password
-        self.username = username
         self.alamat = alamat
 
     def setId(self,id):

@@ -7,10 +7,28 @@ class buku():
         self.kategori = None
         self.harga = None
         self.penerbit = None
+        self.stok = None
     
-    def stokNambah(self):
-        query = "INSERT INTO BUKU(nama_buku,kategori_buku,harga,penerbit) VALUES(%s,%s,%s,%s)"
-        db1.write(query,self.judul,self.kategori,self.harga,self.penerbit)
+    def stokNambah(self,jml):
+        query = "UPDATE Buku SET Stok =%s WHERE ID_Buku=%s"
+        self.stok += jml
+        val = (self.stok,self.id)
+        try:
+            db1.cursor.execute(query,val)
+            db1.conn.commit()
+            print(self.stok)
+        except:
+            print("!!!!!!! Data Tidak Berhasil Dimasukkan !!!!!!!")
+        return self.stok
+
+        
+    def stokBerkurang(self,qty):
+        self.stok -= qty
+        query = "UPDATE Buku SET stok = %s WHERE ID_Buku=%s"
+        val = (self.stok, self.id)
+        db1.cursor.execute(query,val)
+        db1.conn.commit()
+        return self.stok
 
     def getDataBuku(self,id):
         data = self.getByID(id)
@@ -20,6 +38,13 @@ class buku():
             self.kategori = i[2]
             self.harga = i[3]
             self.penerbit = i[4]
+            self.stok = i[5]
+    
+    def getStok(self,id):
+        query = "Select stok from buku where id_buku=%s"
+        val = (id,)
+        stok = db1.cursor.execute(query,val)
+        return stok
     
     def getByID(self,id):
         db1.getConn()
@@ -68,6 +93,7 @@ class buku():
             print("  "*2,"KATEGORI","  "*2,"||",end="")
             print("  "*2,"HARGA","  "*2,"||",end="")
             print("  "*2,"PENERBIT","  "*2,"||",end="")
+            print("  "*2,"STOK","  "*2,"||",end="")
             print()
             for i in all:
                 print(" "*7,i[0], end=" "*4)
@@ -75,6 +101,7 @@ class buku():
                 print(" "*7,i[2], end=" "*4)
                 print(" "*7,i[3], end=" "*4)
                 print(" "*7,i[4], end=" "*4)
+                print(" "*7,i[5], end=" "*4)
                 print()
             return all
         else:

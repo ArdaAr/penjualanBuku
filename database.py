@@ -24,51 +24,51 @@ class dbConnection():
             print('Gagal connect dengan database {}'.format(e))
     
     #OVERLOADING
-    def show(self, *argv):
-        if len(argv)==1:
-            buku = self.showAll(argv[0])
-        elif len(argv)==2:
-            buku = self.showCategory(argv[0],argv[1])
-        else:
-            buku = self.showHarga(argv[0],argv[1],argv[2])
-        return buku
+    # def show(self, *argv):
+    #     if len(argv)==1:
+    #         buku = self.showAll(argv[0])
+    #     elif len(argv)==2:
+    #         buku = self.showCategory(argv[0],argv[1])
+    #     else:
+    #         buku = self.showHarga(argv[0],argv[1],argv[2])
+    #     return buku
 
-    def showAll(self,query):
-        sql = query
-        self.cursor.execute(sql)
-        return self.showData()
+    # def showAll(self,query):
+    #     sql = query
+    #     self.cursor.execute(sql)
+    #     return self.showData()
     
-    def showCategory(self,query,param):
-        sql = query
-        val = (param,)
-        self.cursor.execute(sql,val)
-        return self.showData()
+    # def showCategory(self,query,param):
+    #     sql = query
+    #     val = (param,)
+    #     self.cursor.execute(sql,val)
+    #     return self.showData()
         
-    def showHarga(self,query,param1,param2):
-        sql = query
-        val = (param1,param2)
-        self.cursor.execute(sql,val)
-        return self.showData()
+    # def showHarga(self,query,param1,param2):
+    #     sql = query
+    #     val = (param1,param2)
+    #     self.cursor.execute(sql,val)
+    #     return self.showData()
 
-    def showData(self):
-        all = self.cursor.fetchall()
-        if len(all)>0:
-            print("||","  "*2,"ID","  "*2,"||",end="")
-            print("  "*2,"JUDUL BUKU","  "*2,"||",end="")
-            print("  "*2,"KATEGORI","  "*2,"||",end="")
-            print("  "*2,"HARGA","  "*2,"||",end="")
-            print("  "*2,"PENERBIT","  "*2,"||",end="")
-            print()
-            for i in all:
-                print(" "*7,i[0], end=" "*4)
-                print(" "*7,i[1], end=" "*4)
-                print(" "*7,i[2], end=" "*4)
-                print(" "*7,i[3], end=" "*4)
-                print(" "*7,i[4], end=" "*4)
-                print()
-            return all
-        else:
-            print("Maaf Kategori yang anda inputkan tidak ada !")
+    # def showData(self):
+    #     all = self.cursor.fetchall()
+    #     if len(all)>0:
+    #         print("||","  "*2,"ID","  "*2,"||",end="")
+    #         print("  "*2,"JUDUL BUKU","  "*2,"||",end="")
+    #         print("  "*2,"KATEGORI","  "*2,"||",end="")
+    #         print("  "*2,"HARGA","  "*2,"||",end="")
+    #         print("  "*2,"PENERBIT","  "*2,"||",end="")
+    #         print()
+    #         for i in all:
+    #             print(" "*7,i[0], end=" "*4)
+    #             print(" "*7,i[1], end=" "*4)
+    #             print(" "*7,i[2], end=" "*4)
+    #             print(" "*7,i[3], end=" "*4)
+    #             print(" "*7,i[4], end=" "*4)
+    #             print()
+    #         return all
+    #     else:
+    #         print("Maaf Kategori yang anda inputkan tidak ada !")
 
     def write(self,query,judul,kategori,harga,penerbit):
         try:
@@ -113,6 +113,11 @@ class dbConnection():
 db1 = dbConnection("localhost","root","Lowlight12","jual_buku")
 db1.getConn()
 
+# id = input("masukkan id dari data yang akan di hapus : ")
+# sql = "DELETE FROM CUSTOMER WHERE ID_Customer=%s"
+# val = (id,)
+# db1.cursor.execute(sql,val)
+# db1.conn.commit()
 # kategori = input("Masukkan Kategori Buku : ")
 # query = "Select * from Buku where kategori_buku=%s"
 # sql = query
