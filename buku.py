@@ -105,7 +105,7 @@ class buku():
                 print()
             return all
         else:
-            print("Maaf Kategori yang anda inputkan tidak ada !")
+            print("Maaf Buku yang anda Cari tidak ada !")
 
 # b1 = buku()
 # b1.getDataBuku()

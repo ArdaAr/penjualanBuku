@@ -13,6 +13,9 @@ class pembelian():
     
     def setQuantity(self):
         qty = int(input("Masukkan jumlah : "))
+        while qty <= 0:
+            print("!!! Maaf jumlah yang anda masukkan tidak valid !!!")
+            qty = int(input("Masukkan jumlah : "))
         self.quantity = qty
         
     
@@ -32,18 +35,6 @@ class pembelian():
     
     def getTanggal(self):
         return self.tanggal
-    
-    # def showPembelian(self,objUser,objBuku):
-    #     print("=========== Rekap Pembelian ===========")
-    #     print("Id buku : {}".format(self.idBuku))
-    #     print("Judul Buku : {}".format(objBuku.judul))
-    #     print("Id Customer : {}".format(self.idCustomer))
-    #     print("Nama Customer : {}".format(objUser.nama))
-    #     print("Alamat : {}".format(objUser.alamat))
-    #     print("Jumlah pembelian : {}".format(self.quantity))
-    #     print("Jumlah Harga : {} x {} = {}".format(objBuku.harga,self.quantity,self.nominal))
-    #     print("Tanggal Pembelian : {}".format(self.getTanggal()))
-    #     return self.nominal
 
     def catatPesanan(self, db):
         sql = "INSERT INTO Pesanan(ID_PESANAN,ID_Buku,ID_Customer,quantity) VALUES(%s,%s,%s,%s)"
@@ -78,4 +69,3 @@ class pembelian():
         self.nominal += self.quantity*objBuku.harga
         return self.nominal
 buy = pembelian()
-print(buy.setID(db1))

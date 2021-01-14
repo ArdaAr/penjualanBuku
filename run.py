@@ -13,21 +13,24 @@ class run():
             self.loginUser(db,objRun)
         elif a==2:
             self.loginAdmin(db,objRun)
-        else:
+        elif a==3:
             self.daftar(db,objRun)
+        else:
+            print("!!! Maaf pilihan anda tidak dikenali !!!")
+            self.login(db,objRun)
 
     def menuUser(self,objRun,db,objUser):
         objBuku = buku()
-        pilihan = int(input('===== Menu Books Console Store =====\n1. Lihat Daftar Semua Buku\n2. Daftar Buku Berdasarkan kategori\n3. Daftar Buku Berdasarkan Harga\n4. Keluar\n= '))
+        pilihan = int(input('========== Menu Books Console Store ==========\n1. Lihat Daftar Semua Buku\n2. Daftar Buku Berdasarkan kategori\n3. Daftar Buku Berdasarkan Harga\n4. Keluar\n= '))
         if pilihan==1:
             objBuku.show()
-            return self.opsiBeli(objRun,db,objUser)
+            self.opsiBeli(objRun,db,objUser)
         elif pilihan==2:
             objBuku.showCategory()
-            return self.opsiBeli(objRun,db,objUser)
+            self.opsiBeli(objRun,db,objUser)
         elif pilihan==3:
             objBuku.showHarga()
-            return self.opsiBeli(objRun,db,objUser)
+            self.opsiBeli(objRun,db,objUser)
         elif pilihan==4:
             self.keluar(objRun,db,objUser)
         else:
@@ -35,18 +38,30 @@ class run():
             self.menuUser(objRun,db,objUser)
 
     def keluar(self, objRun, db, obj):
-        print("="*20+" Sampai Jumpa {} ".format(obj.nama)+"="*20)
+        print("="*10+" Sampai Jumpa {} ".format(obj.nama)+"="*10)
         self.login(db, objRun)
     
     def opsiBeli(self,objRun,db,objUser):
         opsi = int(input("1. Beli Buku\n2. Kembali\n= "))
         if opsi == 1:
             return self.beli(objUser,objRun,db)
-        else:
+        elif opsi ==2:
             return self.menuUser(objRun,db,objUser)
+        else :
+            self.opsiBeli(objRun,db,objUser)
 
     def beli(self,objUser,objRun,db):
         id = int(input("Masukkan ID Buku : "))
+        query = "Select * from Buku where ID_BUKU=%s"
+        val = (id,)
+        db1.cursor.execute(query,val)
+        data = db1.cursor.fetchone()
+        while data == None:
+            print("Maaf ID Buku tidak ada silakan masukkan kembali")
+            id = input("Masukkan ID Buku : ")
+            val = (id,)
+            db1.cursor.execute(query,val)
+            data = db1.cursor.fetchall()
         objBuku = buku()
         buy = pembelian()
         buy.setID(db)
@@ -65,9 +80,11 @@ class run():
             beliLagi = int(input("Apa ada membeli lagi ?\n1. ya\n0. tidak\n= "))
         buy.showPembelian(db)
         print("="*20)
-        back = int(input("Tekan 1 Untuk Kembali ke Menu Utama"))
-        if back == 1:
-            self.menuUser(objRun,db,objUser)
+        back = int(input("Tekan 1 Untuk Kembali ke Menu Utama = "))
+        while back != 1:
+            print(" !!! Inputan anda salah !!! ")
+            back = int(input("Tekan 1 Untuk Kembali ke Menu Utama = "))
+        self.menuUser(objRun,db,objUser)
         # print("Total yang harus anda adalah : ",buy.nominal)
 
     def loginUser(self,db,objRun):
@@ -82,7 +99,7 @@ class run():
             objUser = user(dataUser[1],dataUser[2],dataUser[3],dataUser[4],dataUser[5],dataUser[6])
             objUser.setId(dataUser[0])
             if objUser.cekPassword(pw):
-                print("======= SELAMAT DATANG KEMBALI {} =======".format(objUser.nama))
+                print("========== SELAMAT DATANG KEMBALI {} ==========".format(objUser.nama))
                 print(objUser.email)
                 self.menuUser(objRun,db,objUser)
             else:
@@ -93,7 +110,7 @@ class run():
             self.loginUser(db,objRun)
 
     def menuAdmin(self,db,objAdmin,objRun):
-        pilihan = int(input("masukan pilihan \n 1. lihatPesanan \n 2. hapusStok \n 3. Tambah Buku \n 4. Tambah Jumlah Stok \n 5. Keluar \n ="))
+        pilihan = int(input("masukan pilihan \n 1. lihatPesanan \n 2. hapusStok \n 3. Tambah Buku \n 4. Tambah Jumlah Stok \n 5. Keluar \n = "))
         if pilihan==1 :
             objAdmin.lihatPesanan(db)
             self.menuAdmin(db,objAdmin,objRun)
@@ -104,10 +121,13 @@ class run():
             objAdmin.tambahStok(db)
             self.menuAdmin(db,objAdmin,objRun)
         elif pilihan==4 :
-            objAdmin.tambahJumlahStok()
+            objAdmin.tambahJumlahStok(db)
             self.menuAdmin(db,objAdmin,objRun)
-        else:
+        elif pilihan==5:
             self.keluar(objRun,db,objAdmin)
+        else:
+            print("!!! Maaf Pilihan anda tidak dikenali !!!")
+            self.menuAdmin(db,objAdmin,objRun)
                
     def loginAdmin(self,db,objRun):
         username = input("Masukkan Username\n= ")
@@ -120,7 +140,7 @@ class run():
         if (dataAdmin):
             objAdmin = admin(dataAdmin[1],dataAdmin[2],dataAdmin[3])
             if objAdmin.cekPassword(pw):
-                print("======= SELAMAT DATANG KEMBALI {} =======".format(objAdmin.nama))
+                print("========== SELAMAT DATANG KEMBALI {} ==========".format(objAdmin.nama))
                 self.menuAdmin(db,objAdmin,objRun)
             else:
                 print("Maaf kata sandi yang anda masukkan salah!")
